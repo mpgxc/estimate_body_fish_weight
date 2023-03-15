@@ -1,29 +1,14 @@
 import numpy as np
 from tqdm import tqdm
-from matplotlib import pyplot as plt
-from mpl_toolkits.axes_grid1 import ImageGrid
-from skimage import filters
-from skimage.io import imread
-from skimage.color import rgb2gray
-from skimage.transform import resize
-import statistics
-from skimage import filters, measure, morphology, exposure, feature
-import skimage
-import numpy as np
 from joblib import Parallel, delayed
 
-from glob import glob as show_dir_files
-from scipy import ndimage as ndi
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 
 from skimage.io import imread
+from skimage.transform import resize
 from skimage.color import rgb2gray
-from sklearn.utils import shuffle
-from sklearn.cluster import KMeans
-from skimage.measure import label, regionprops
-from sklearn.metrics import pairwise_distances_argmin
-from skimage import filters, measure, morphology, exposure, feature
+from skimage import filters, measure, morphology, exposure
 import statistics
 
 
@@ -43,8 +28,10 @@ def check_colision_border(mask):
 
     return False
 
+
 def binarize_image(arr):
     return arr > filters.threshold_triangle(arr)
+
 
 def plot(arr_images=[], grid=(2, 2), cmap="inferno"):
 
@@ -59,23 +46,23 @@ def plot(arr_images=[], grid=(2, 2), cmap="inferno"):
         ax.axis('off')
 
     plt.show()
-    
+
 
 def load_images_from_directory_resize(arr_paths, is_gray=False, dim=(256, 256)):
 
     def process(img_path):
-        
+
         image = imread(img_path)
         image = resize(image, dim, anti_aliasing=True)
 
-        if is_gray: 
+        if is_gray:
             return rgb2gray(image)
-        
-        return image
-    
-    return np.asarray(Parallel(n_jobs=4)(delayed(process)(path) for path in arr_paths))
 
-  
+        return image
+
+    return np.asarray(Parallel(n_jobs=-2)(delayed(process)(path) for path in arr_paths))
+
+
 def load_images_from_directory(arr_paths, is_gray=False):
 
     arr_images = []
@@ -83,16 +70,15 @@ def load_images_from_directory(arr_paths, is_gray=False):
     for img_path in tqdm(arr_paths):
         image = imread(img_path)
 
-        if is_gray: 
+        if is_gray:
             arr_images.append(rgb2gray(image))
-        else: 
+        else:
             arr_images.append(image)
-            
-    return np.asarray(arr_images)
-  
-    
-def auto_invert_image_mask(arr):
 
+    return np.asarray(arr_images)
+
+
+def auto_invert_image_mask(arr):
     """
     Calcula os pixels da imagem e inverte os pixels da imagem caso os pixels True > False
     Isso é uma forma de garatir que as mascaras tenham sempre o fundo preto = 0 e o ROI = 1
@@ -115,7 +101,7 @@ def find_bighest_cluster_area(clusters):
 
 
 def find_bighest_cluster(img):
-  
+
     clusters = auto_invert_image_mask(img)
 
     clusters = measure.label(clusters, background=0)
@@ -123,8 +109,8 @@ def find_bighest_cluster(img):
     cluster_size = find_bighest_cluster_area(clusters)
 
     return morphology.remove_small_objects(clusters.astype(bool),
-                                         min_size=(cluster_size - 1),
-                                         connectivity=8)
+                                           min_size=(cluster_size - 1),
+                                           connectivity=8)
 
 
 def find_roi(img):
