@@ -150,10 +150,14 @@ def find_bighest_cluster_area(clusters: np.ndarray) -> int:
 
     Returns:
         Área em pixels do maior cluster.
+
+    Raises:
+        ValueError: Se não houver regiões na imagem.
     """
     regions = measure.regionprops(clusters)
-    all_areas = (r.area for r in regions)
-    return max(all_areas)
+    if not regions:
+        raise ValueError("Nenhuma região encontrada na imagem de clusters.")
+    return max(r.area for r in regions)
 
 
 def find_bighest_cluster(img: np.ndarray) -> np.ndarray:

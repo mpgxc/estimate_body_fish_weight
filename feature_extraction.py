@@ -60,7 +60,7 @@ def extract_features_from_images(
     """
     df_output_props = pd.DataFrame()
 
-    if images_arr is not None and len(images_arr):
+    if images_arr is not None and np.asarray(images_arr).size > 0:
         rows = []
         for path, mask in tqdm(zip(images_path, images_arr)):
             try:
