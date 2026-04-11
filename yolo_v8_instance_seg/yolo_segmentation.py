@@ -23,7 +23,7 @@ class YOLOSegmentation:
 
                 segment = np.array(seg, dtype=np.int32)
                 segmentation_contours_idx.append(segment)
-        except:
+        except Exception:
             return (), (), (), ()
 
         bboxes = np.array(result.boxes.xyxy.cpu(), dtype="int")
