@@ -1,0 +1,15 @@
+tensorflow>=2.10
+tensorflow-examples
+ultralytics
+scikit-image>=0.19
+scikit-learn>=1.0
+opencv-python
+pandas>=2.0
+numpy
+joblib
+yellowbrick
+xgboost
+seaborn
+matplotlib
+tqdm
+scipy
