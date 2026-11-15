@@ -11,6 +11,7 @@ Desenho aprovado: [`docs/superpowers/specs/2026-11-15-evolucao-fishweight-design
 - Um plano por vez. O seguinte só é escrito quando o anterior termina, porque depende dos resultados dele.
 - A linha **Agora**, no topo, diz onde o trabalho está. Ela é atualizada ao fim de cada plano.
 - Resultados numéricos ficam em `results/`; a leitura deles, em `docs/experiments/`.
+- [`docs/experiments/tecnicas.md`](experiments/tecnicas.md) descreve cada técnica implementada; [`docs/experiments/comparacao.md`](experiments/comparacao.md) põe as métricas de todas lado a lado. Os dois são atualizados a cada plano.
 
 ## Fase 1 — Experimentos
 

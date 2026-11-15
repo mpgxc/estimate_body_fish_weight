@@ -5,7 +5,9 @@ Research project that estimates fish body weight in grams from a single photo. I
 
 - **Where the work stands:** `docs/ROADMAP.md`. Read it first.
 - **What is being built and why:** `docs/superpowers/specs/2026-11-15-evolucao-fishweight-design.md`.
-- **Current results:** `docs/experiments/relatorio-fase1a.md`.
+- **What has been implemented:** `docs/experiments/tecnicas.md` (hand-written, one section per technique, no numbers).
+- **Metrics of every technique side by side:** `docs/experiments/comparacao.md` (generated; never edit by hand).
+- **Reading of the current results:** `docs/experiments/relatorio-fase1a.md`.
 - **Literature notes:** `docs/research/` (AI-generated; verify every citation at the source).
 
 `README.md` holds only the thesis abstract. The full thesis is the root PDF. `ESTRUTURA.md` is an old, outdated restructuring plan.
@@ -89,6 +91,7 @@ There is no linter, formatter or CI. Don't add tooling unless asked.
 - pytest, tests in `tests/`, one file per module. Write the test first and watch it fail.
 - Tests assert exact values on small synthetic inputs, plus invariants on the real dataset (244 fish, fold partitions, no train/test overlap).
 - A result is only reported after its experiment script ran and `experiments.report` regenerated the tables. Numbers are never typed by hand into docs.
+- **Every new technique** ships with its section in `docs/experiments/tecnicas.md` and a regenerated `comparacao.md`, in the same commit as its `results/`.
 
 ## Gotchas
 - **The thesis model was not image-only.** Its feature selection kept the tape-measured `length` and the annotated species, and was computed on the full dataset. `e1_monografia` reproduces that on purpose.

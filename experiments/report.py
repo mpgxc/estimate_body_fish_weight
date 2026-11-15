@@ -13,6 +13,17 @@ import pandas as pd
 from fishweight.data import REPO_ROOT
 
 REPORT = REPO_ROOT / "docs/experiments/relatorio-fase1a.md"
+COMPARISON = REPO_ROOT / "docs/experiments/comparacao.md"
+COMPARISON_HEADER = """# Comparação de métricas
+
+Arquivo gerado por `uv run python -m experiments.report`. Não edite à mão.
+
+Uma linha por técnica, ordenada pelo MAE em P3 (uma sessão de coleta fora do
+treino), que é o protocolo que decide. `(ref.)` marca variantes que usam
+informação que a ferramenta não terá; elas não concorrem. A descrição de cada
+técnica está em [`tecnicas.md`](tecnicas.md).
+
+"""
 BEGIN, END = "<!-- tabelas:início -->", "<!-- tabelas:fim -->"
 PROTOCOL_TITLES = {
     "p1": "P1 — reprodução (70/30 da monografia)",
@@ -85,6 +96,31 @@ def build_tables(results_dir: Path) -> str:
     return "\n".join(lines)
 
 
+def build_comparison(results_dir: Path) -> str:
+    """Monta uma tabela única: uma linha por técnica, os três protocolos lado a lado."""
+    by_experiment: dict[str, dict[str, dict]] = {}
+    for path in sorted(Path(results_dir).glob("*/*/metrics.json")):
+        run = json.loads(path.read_text(encoding="utf-8"))
+        by_experiment.setdefault(run["experiment"], {})[run["protocol"]] = run
+
+    def p3_mae(runs: dict[str, dict]) -> float:
+        return runs["p3"]["overall"]["mae"] if "p3" in runs else float("inf")
+
+    lines = ["| Técnica | P1: MAE (g) | P2: MAE (g) | P3: MAE (g) [IC 95%] | P3: MAPE (%) | P3: R² | P3: viés (g) |",
+             "|---|---|---|---|---|---|---|"]
+    for name, runs in sorted(by_experiment.items(), key=lambda item: (p3_mae(item[1]), item[0])):
+        label = name + (" (ref.)" if next(iter(runs.values()))["reference_only"] else "")
+        mae = {p: _num(runs[p]["overall"]["mae"]) if p in runs else "–" for p in PROTOCOL_TITLES}
+        if "p3" in runs:
+            o = runs["p3"]["overall"]
+            lo, hi = o["mae_ci"]
+            p3 = f"{mae['p3']} [{_num(lo)}; {_num(hi)}] | {_num(o['mape'])} | {_num(o['r2'], 3)} | {_num(o['bias'])}"
+        else:
+            p3 = "– | – | – | –"
+        lines.append(f"| {label} | {mae['p1']} | {mae['p2']} | {p3} |")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
     tables = build_tables(REPO_ROOT / "results")
     text = REPORT.read_text(encoding="utf-8") if REPORT.is_file() else f"# Relatório da Fase 1A\n\n{BEGIN}\n{END}\n"
@@ -93,6 +129,8 @@ def main() -> None:
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(f"{head}{BEGIN}\n\n{tables}\n{END}{tail}", encoding="utf-8")
     print(f"tabelas gravadas em {REPORT.relative_to(REPO_ROOT)}")
+    COMPARISON.write_text(COMPARISON_HEADER + build_comparison(REPO_ROOT / "results"), encoding="utf-8")
+    print(f"comparação gravada em {COMPARISON.relative_to(REPO_ROOT)}")
 
 
 if __name__ == "__main__":

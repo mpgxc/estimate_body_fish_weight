@@ -1,13 +1,13 @@
 import json
 
-from experiments.report import build_tables
+from experiments.report import build_comparison, build_tables
 
 
-def _metrics(path, name, mae, reference_only=False):
+def _metrics(path, name, mae, reference_only=False, protocol="p3"):
     path.mkdir(parents=True)
     base = {"n": 10, "mae": mae, "rmse": mae, "mape": 5.0, "r2": 0.9, "bias": 0.0}
     (path / "metrics.json").write_text(json.dumps({
-        "experiment": name, "protocol": "p3", "reference_only": reference_only,
+        "experiment": name, "protocol": protocol, "reference_only": reference_only,
         "overall": {**base, "mae_ci": [mae - 1, mae + 1], "mape_ci": [4.0, 6.0]},
         "per_fold": {}, "per_species_group": {"tambaqui": base}, "per_weight_band": {}}))
 
@@ -29,3 +29,14 @@ def test_small_species_group_carries_a_warning(tmp_path):
     data["per_species_group"]["outras"] = data["per_species_group"]["tambaqui"]
     path.write_text(json.dumps(data))
     assert "amostra pequena" in build_tables(tmp_path)
+
+
+def test_comparison_has_one_row_per_technique_ranked_by_p3(tmp_path):
+    _metrics(tmp_path / "a/p2", "a", 25.0, protocol="p2")
+    _metrics(tmp_path / "a/p3", "a", 30.0)
+    _metrics(tmp_path / "b/p3", "b", 20.0)
+    _metrics(tmp_path / "c/p1", "c", 10.0, reference_only=True, protocol="p1")
+    rows = [line for line in build_comparison(tmp_path).splitlines() if line.startswith("| ")][1:]
+    assert [row.split("|")[1].strip() for row in rows] == ["b", "a", "c (ref.)"]
+    assert rows[1] == "| a | – | 25,0 | 30,0 [29,0; 31,0] | 5,0 | 0,900 | 0,0 |"
+    assert rows[2] == "| c (ref.) | 10,0 | – | – | – | – | – |"
