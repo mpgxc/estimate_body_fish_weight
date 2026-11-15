@@ -58,4 +58,4 @@ Desenho aprovado: [`docs/superpowers/specs/2026-11-15-evolucao-fishweight-design
 | Data | O que aconteceu |
 |---|---|
 | 2026-11-15 | `AGENTS.md` criado; pesquisa salva em `docs/research/`; desenho escrito; Plano 1A escrito |
-| 2026-11-15 | Plano 1A executado: 32 testes; E0 e E1 em P1–P3; monografia reproduzida; o melhor modelo só de máscara tem MAE de 38,3 g e R² 0,925 com uma sessão de fora |
+| 2026-11-15 | Plano 1A executado e revisado: 35 testes; E0 e E1 em P1–P3; monografia reproduzida; o melhor modelo só de máscara tem MAE de 38,3 g e R² 0,925 com uma sessão de fora |
