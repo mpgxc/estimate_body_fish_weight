@@ -39,6 +39,8 @@ MONOGRAPH_TABLE_6 = {
     "RandomForestRegressor": (0.8810, 34.98),
     "PCARegression": (0.7687, 69.55),
     "PolyRegression": (0.9124, 31.92),
+    # Tabela 5 (com normalização): confere a regressão linear sem depender do solver.
+    "LinearRegression_normalizada": (0.8594, 41.85),
 }
 
 
@@ -93,7 +95,13 @@ def run_monograph() -> None:
     in_test = data["img"].isin(load_splits("p1")[0]["test"])
     train, test = data[~in_test], data[in_test]
     print(f"{'modelo':28} {'R2':>7} {'R2 monog.':>10} {'MAE':>7} {'MAE monog.':>11}")
-    for model_name, model in make_models(scale=False).items():
+    # A matriz tem posto incompleto (a área aparece em várias colunas), então a
+    # regressão linear sem escala depende do solver; a versão com escala não.
+    rank = int(np.linalg.matrix_rank(train[selected].to_numpy(dtype=float)))
+    print(f"posto da matriz de treino: {rank} de {len(selected)} colunas")
+    models = make_models(scale=False)
+    models["LinearRegression_normalizada"] = make_models(scale=True)["LinearRegression"]
+    for model_name, model in models.items():
         y_pred = model.fit(train[selected], train["weight"]).predict(test[selected])
         overall = regression_metrics(test["weight"], y_pred)
         for metric in ("mae", "mape"):
@@ -106,6 +114,7 @@ def run_monograph() -> None:
             "reference_only": True,
             "overall": overall,
             "selected_features": selected,
+            "design_matrix_rank": rank,
         }
         (out_dir / "metrics.json").write_text(
             json.dumps(metrics, indent=1, ensure_ascii=False) + "\n", encoding="utf-8"

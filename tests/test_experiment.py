@@ -37,6 +37,15 @@ def test_writes_predictions_and_metrics(table, tmp_path):
     assert metrics["overall"]["mae_ci"][0] <= metrics["overall"]["mae"] <= metrics["overall"]["mae_ci"][1]
 
 
+def test_ci_does_not_shrink_when_each_fish_is_tested_more_than_once(table, tmp_path, monkeypatch):
+    once = run_experiment("once", "p3", table, train_mean, results_dir=tmp_path)
+    repeated = FOLDS + [{**fold, "name": fold["name"] + "2"} for fold in FOLDS]
+    monkeypatch.setattr(experiment, "load_splits", lambda protocol: repeated)
+    twice = run_experiment("twice", "p2", table, train_mean, results_dir=tmp_path)
+    assert twice["overall"]["n"] == 12
+    assert twice["overall"]["mae_ci"] == pytest.approx(once["overall"]["mae_ci"])
+
+
 def test_model_cannot_see_test_weights(table, tmp_path):
     def cheats(train, test):
         return test["weight"].to_numpy()

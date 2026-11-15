@@ -50,7 +50,7 @@ Desenho aprovado: [`docs/superpowers/specs/2026-11-15-evolucao-fishweight-design
 - [ ] Datas de coleta: a monografia fala em cinco dias entre 29/10 e 10/12/2022; os nomes dos arquivos mostram seis datas, duas no início de 2022. Qual vale para o artigo?
 - [ ] Evento ou revista alvo do artigo.
 - [ ] Sessão 2022-10-29: a escala é 4% maior (131 px/cm contra 125) e todas as predições saem acima do peso real. A caixa, a altura ou o celular mudaram nesse dia? Se a distância varia, a ferramenta precisa de uma referência de escala.
-- [ ] Curimatã `IMG_20220110_152533.jpg`: o peso de 1.760 g está certo? Os outros curimatãs do mesmo tamanho pesam de 1.135 a 1.385 g.
+- [ ] Curimatã `IMG_20220110_152533.jpg`: o peso de 1.760 g está certo? Os seis curimatãs de 34 a 37 cm pesam de 1.100 a 1.385 g.
 - [ ] Traíras `IMG_20220110_150640.jpg` e `IMG_20220110_150758.jpg`: os comprimentos de 8 e 7 cm estão certos? A máscara indica cerca de 18 e 16 cm.
 
 ## Registro

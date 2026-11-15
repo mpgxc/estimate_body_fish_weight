@@ -39,13 +39,26 @@ def bootstrap_ci(
     n_boot: int = 2000,
     seed: int = 0,
     level: float = 0.95,
+    groups=None,
 ) -> tuple[float, float]:
-    """Intervalo de confiança por percentis, reamostrando pares (real, predito)."""
+    """Intervalo de confiança por percentis, reamostrando pares (real, predito).
+
+    Args:
+        groups: Identificador do peixe de cada par. Quando o mesmo peixe tem
+            várias predições (P2 repete cada um três vezes), a reamostragem
+            é feita por peixe; tratar as repetições como independentes
+            estreitaria o intervalo.
+    """
     y_true = np.asarray(y_true, dtype=float)
     y_pred = np.asarray(y_pred, dtype=float)
+    codes = np.arange(y_true.size) if groups is None else pd.factorize(np.asarray(groups))[0]
+    members = [np.flatnonzero(codes == g) for g in range(codes.max() + 1)]
     rng = np.random.default_rng(seed)
-    idx = rng.integers(0, y_true.size, size=(n_boot, y_true.size))
-    values = [regression_metrics(y_true[i], y_pred[i])[metric] for i in idx]
+    picks = rng.integers(0, len(members), size=(n_boot, len(members)))
+    values = []
+    for pick in picks:
+        rows = np.concatenate([members[g] for g in pick])
+        values.append(regression_metrics(y_true[rows], y_pred[rows])[metric])
     tail = (1 - level) / 2 * 100
     lo, hi = np.percentile(values, [tail, 100 - tail])
     return float(lo), float(hi)

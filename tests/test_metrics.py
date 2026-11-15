@@ -36,6 +36,16 @@ def test_bootstrap_ci_brackets_the_point_estimate_and_is_reproducible():
     assert (lo, hi) == bootstrap_ci(y, p, "mae")
 
 
+def test_bootstrap_ci_by_group_ignores_repeated_rows():
+    rng = np.random.default_rng(2)
+    y = rng.uniform(100, 1000, 50)
+    p = y + rng.normal(0, 30, 50)
+    fish = np.arange(50)
+    single = bootstrap_ci(y, p, "mae", groups=fish)
+    tripled = bootstrap_ci(np.tile(y, 3), np.tile(p, 3), "mae", groups=np.tile(fish, 3))
+    assert tripled == pytest.approx(single)
+
+
 def test_weight_band_splits_into_terciles():
     bands = weight_band(pd.Series(range(1, 10)))
     assert bands.tolist() == ["baixo"] * 3 + ["medio"] * 3 + ["alto"] * 3

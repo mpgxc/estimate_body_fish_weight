@@ -20,3 +20,12 @@ def test_tables_rank_by_mae_and_mark_reference_runs(tmp_path):
     assert text.index("oraculo (ref.)") < text.index("melhor") < text.index("pior")
     assert "20,0 [19,0; 21,0]" in text
     assert "Por espécie: melhor" in text
+
+
+def test_small_species_group_carries_a_warning(tmp_path):
+    _metrics(tmp_path / "m/p3", "m", 20.0)
+    path = tmp_path / "m/p3/metrics.json"
+    data = json.loads(path.read_text())
+    data["per_species_group"]["outras"] = data["per_species_group"]["tambaqui"]
+    path.write_text(json.dumps(data))
+    assert "amostra pequena" in build_tables(tmp_path)

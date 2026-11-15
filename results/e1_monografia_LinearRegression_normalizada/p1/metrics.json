@@ -1,0 +1,50 @@
+{
+ "experiment": "e1_monografia_LinearRegression_normalizada",
+ "protocol": "p1",
+ "reference_only": true,
+ "overall": {
+  "n": 74,
+  "mae": 41.85728498429601,
+  "rmse": 90.39038603349974,
+  "mape": 13.513413610066099,
+  "r2": 0.8594001933480993,
+  "bias": -17.17572376338326,
+  "mae_ci": [
+   27.416456555259106,
+   62.90750350458306
+  ],
+  "mape_ci": [
+   7.827294079428871,
+   20.762151846544274
+  ]
+ },
+ "selected_features": [
+  "length",
+  "area",
+  "bbox_area",
+  "convex_area",
+  "equivalent_diameter",
+  "filled_area",
+  "major_axis_length",
+  "moments-0-0",
+  "moments-0-1",
+  "moments-0-2",
+  "moments-0-3",
+  "moments-1-0",
+  "moments-1-1",
+  "moments-1-2",
+  "moments-1-3",
+  "moments-2-0",
+  "moments-2-1",
+  "moments-2-2",
+  "moments-2-3",
+  "moments_central-0-0",
+  "moments_central-0-2",
+  "moments_central-2-0",
+  "moments_central-2-2",
+  "perimeter",
+  "feret_diameter_max",
+  "specie"
+ ],
+ "design_matrix_rank": 19
+}

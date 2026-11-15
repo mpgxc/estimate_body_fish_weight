@@ -80,7 +80,9 @@ def run_experiment(
     overall = _metrics(predictions)
     for metric in ("mae", "mape"):
         overall[f"{metric}_ci"] = list(
-            bootstrap_ci(predictions["y_true"], predictions["y_pred"], metric)
+            bootstrap_ci(
+                predictions["y_true"], predictions["y_pred"], metric, groups=predictions["img"]
+            )
         )
     metrics = {
         "experiment": name,

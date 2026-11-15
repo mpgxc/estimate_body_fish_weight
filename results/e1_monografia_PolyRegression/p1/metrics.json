@@ -45,5 +45,6 @@
   "perimeter",
   "feret_diameter_max",
   "specie"
- ]
+ ],
+ "design_matrix_rank": 19
 }

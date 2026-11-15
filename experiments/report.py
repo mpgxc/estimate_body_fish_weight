@@ -65,6 +65,8 @@ def build_tables(results_dir: Path) -> str:
     if candidates:
         winner = min(candidates, key=lambda r: r["overall"]["mae"])
         lines += _group_table(f"Por espécie: {winner['experiment']}", winner["per_species_group"])
+        if "outras" in winner["per_species_group"]:
+            lines += ["`outras` reúne panga, traíra e lambari: amostra pequena, leitura apenas indicativa.", ""]
         lines += _group_table(f"Por sessão: {winner['experiment']}", winner["per_fold"])
         lines += _group_table(f"Por faixa de peso: {winner['experiment']}", winner["per_weight_band"])
 
