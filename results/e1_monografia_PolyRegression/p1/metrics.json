@@ -1,0 +1,49 @@
+{
+ "experiment": "e1_monografia_PolyRegression",
+ "protocol": "p1",
+ "reference_only": true,
+ "overall": {
+  "n": 74,
+  "mae": 31.92446647884004,
+  "rmse": 71.31316723544697,
+  "mape": 7.897775484340603,
+  "r2": 0.9124855653437344,
+  "bias": -1.513161439142381,
+  "mae_ci": [
+   20.076233218060256,
+   48.59325159585273
+  ],
+  "mape_ci": [
+   5.868068186939059,
+   10.29248516508688
+  ]
+ },
+ "selected_features": [
+  "length",
+  "area",
+  "bbox_area",
+  "convex_area",
+  "equivalent_diameter",
+  "filled_area",
+  "major_axis_length",
+  "moments-0-0",
+  "moments-0-1",
+  "moments-0-2",
+  "moments-0-3",
+  "moments-1-0",
+  "moments-1-1",
+  "moments-1-2",
+  "moments-1-3",
+  "moments-2-0",
+  "moments-2-1",
+  "moments-2-2",
+  "moments-2-3",
+  "moments_central-0-0",
+  "moments_central-0-2",
+  "moments_central-2-0",
+  "moments_central-2-2",
+  "perimeter",
+  "feret_diameter_max",
+  "specie"
+ ]
+}

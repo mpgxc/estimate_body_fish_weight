@@ -1,0 +1,49 @@
+{
+ "experiment": "e1_monografia_GradientBoostingRegressor",
+ "protocol": "p1",
+ "reference_only": true,
+ "overall": {
+  "n": 74,
+  "mae": 34.943418741774096,
+  "rmse": 83.43400168891922,
+  "mape": 8.238035106949477,
+  "r2": 0.88020839358853,
+  "bias": -12.661791058991042,
+  "mae_ci": [
+   22.38958684881687,
+   54.953917206122945
+  ],
+  "mape_ci": [
+   6.233730257574678,
+   10.502077437820933
+  ]
+ },
+ "selected_features": [
+  "length",
+  "area",
+  "bbox_area",
+  "convex_area",
+  "equivalent_diameter",
+  "filled_area",
+  "major_axis_length",
+  "moments-0-0",
+  "moments-0-1",
+  "moments-0-2",
+  "moments-0-3",
+  "moments-1-0",
+  "moments-1-1",
+  "moments-1-2",
+  "moments-1-3",
+  "moments-2-0",
+  "moments-2-1",
+  "moments-2-2",
+  "moments-2-3",
+  "moments_central-0-0",
+  "moments_central-0-2",
+  "moments_central-2-0",
+  "moments_central-2-2",
+  "perimeter",
+  "feret_diameter_max",
+  "specie"
+ ]
+}
