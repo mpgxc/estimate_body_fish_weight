@@ -175,7 +175,7 @@ def find_bighest_cluster(img: np.ndarray) -> np.ndarray:
 
     return morphology.remove_small_objects(
         clusters.astype(bool),
-        min_size=(cluster_size - 1),
+        max_size=(cluster_size - 2),  # equivale ao antigo min_size=cluster_size - 1
         connectivity=8,
     )
 

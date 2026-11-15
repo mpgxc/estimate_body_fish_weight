@@ -12,7 +12,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances_argmin
 from sklearn.utils import shuffle
 
-from src.commons import (
+from fishweight.commons import (
     auto_invert_image_mask,
     binarize_image,
     check_colision_border,
