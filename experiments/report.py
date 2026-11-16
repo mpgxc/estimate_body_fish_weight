@@ -10,21 +10,23 @@ from pathlib import Path
 
 import pandas as pd
 
-from fishweight.data import REPO_ROOT
+from fishweight.data import REPO_ROOT, SUSPECT_WEIGHTS
+from fishweight.metrics import regression_metrics
 
-REPORT = REPO_ROOT / "docs/experiments/relatorio-fase1a.md"
 COMPARISON = REPO_ROOT / "docs/experiments/comparacao.md"
 COMPARISON_HEADER = """# Comparação de métricas
 
 Arquivo gerado por `uv run python -m experiments.report`. Não edite à mão.
 
 Uma linha por técnica, ordenada pelo MAE em P3 (uma sessão de coleta fora do
-treino), que é o protocolo que decide. `(ref.)` marca variantes que usam
-informação que a ferramenta não terá; elas não concorrem. A descrição de cada
-técnica está em [`tecnicas.md`](tecnicas.md).
+treino), que é o protocolo que decide. A coluna **Máscara** diz de onde vêm as
+medidas do teste: `manual` (anotada à mão), `predita` (gerada pela U-Net) ou
+`nenhuma` (o modelo usa só a foto). A ferramenta não terá a máscara manual,
+então só as duas últimas concorrem. `(ref.)` marca variantes que usam informação que a
+ferramenta não terá; elas não concorrem. A descrição de cada técnica está em
+[`tecnicas.md`](tecnicas.md).
 
 """
-BEGIN, END = "<!-- tabelas:início -->", "<!-- tabelas:fim -->"
 PROTOCOL_TITLES = {
     "p1": "P1 — reprodução (70/30 da monografia)",
     "p2": "P2 — aleatório estratificado (5 partes, 3 repetições)",
@@ -72,9 +74,8 @@ def build_tables(results_dir: Path) -> str:
             )
         lines.append("")
 
-    candidates = [r for r in runs if r["protocol"] == "p3" and not r["reference_only"]]
-    if candidates:
-        winner = min(candidates, key=lambda r: r["overall"]["mae"])
+    winner = _candidate(runs)
+    if winner:
         lines += _group_table(f"Por espécie: {winner['experiment']}", winner["per_species_group"])
         if "outras" in winner["per_species_group"]:
             lines += ["`outras` reúne panga, traíra e lambari: amostra pequena, leitura apenas indicativa.", ""]
@@ -96,20 +97,52 @@ def build_tables(results_dir: Path) -> str:
     return "\n".join(lines)
 
 
+def _load_runs(results_dir: Path) -> list[dict]:
+    return [json.loads(p.read_text(encoding="utf-8")) for p in sorted(Path(results_dir).glob("*/*/metrics.json"))]
+
+
+def _candidate(runs: list[dict]) -> dict | None:
+    """O melhor em P3 entre as rodadas que a ferramenta consegue reproduzir."""
+    candidates = [r for r in runs if r["protocol"] == "p3" and not r["reference_only"]]
+    # A ferramenta não terá a máscara manual: havendo rodadas sem ela, só essas concorrem.
+    candidates = [r for r in candidates if r.get("mask", "manual") != "manual"] or candidates
+    return min(candidates, key=lambda r: r["overall"]["mae"]) if candidates else None
+
+
+def build_sensitivity(results_dir: Path) -> str:
+    """Métricas do candidato em P3 com todos os peixes e sem os de peso suspeito."""
+    lines = ["| Experimento | Peixes | n | MAE (g) | RMSE (g) | MAPE (%) | R² | Viés (g) |",
+             "|---|---|---|---|---|---|---|---|"]
+    winner = _candidate(_load_runs(results_dir))
+    predictions_file = Path(results_dir) / winner["experiment"] / "p3/predictions.csv" if winner else None
+    if predictions_file and predictions_file.is_file():
+        predictions = pd.read_csv(predictions_file)
+        subsets = {"todos": predictions, "sem pesos suspeitos": predictions[~predictions["img"].isin(SUSPECT_WEIGHTS)]}
+        for label, rows in subsets.items():
+            m = regression_metrics(rows["y_true"], rows["y_pred"])
+            lines.append(
+                f"| {winner['experiment']} | {label} | {m['n']} | {_num(m['mae'])} | {_num(m['rmse'])} | "
+                f"{_num(m['mape'])} | {_num(m['r2'], 3)} | {_num(m['bias'])} |"
+            )
+    return "\n".join(lines) + "\n"
+
+
 def build_comparison(results_dir: Path) -> str:
     """Monta uma tabela única: uma linha por técnica, os três protocolos lado a lado."""
     by_experiment: dict[str, dict[str, dict]] = {}
     for path in sorted(Path(results_dir).glob("*/*/metrics.json")):
         run = json.loads(path.read_text(encoding="utf-8"))
-        by_experiment.setdefault(run["experiment"], {})[run["protocol"]] = run
+        if run["protocol"] in PROTOCOL_TITLES:  # domínio cruzado tem tabela própria
+            by_experiment.setdefault(run["experiment"], {})[run["protocol"]] = run
 
     def p3_mae(runs: dict[str, dict]) -> float:
         return runs["p3"]["overall"]["mae"] if "p3" in runs else float("inf")
 
-    lines = ["| Técnica | P1: MAE (g) | P2: MAE (g) | P3: MAE (g) [IC 95%] | P3: MAPE (%) | P3: R² | P3: viés (g) |",
-             "|---|---|---|---|---|---|---|"]
+    lines = ["| Técnica | Máscara | P1: MAE (g) | P2: MAE (g) | P3: MAE (g) [IC 95%] | P3: MAPE (%) | P3: R² | P3: viés (g) |",
+             "|---|---|---|---|---|---|---|---|"]
     for name, runs in sorted(by_experiment.items(), key=lambda item: (p3_mae(item[1]), item[0])):
-        label = name + (" (ref.)" if next(iter(runs.values()))["reference_only"] else "")
+        first = next(iter(runs.values()))
+        label = name + (" (ref.)" if first["reference_only"] else "")
         mae = {p: _num(runs[p]["overall"]["mae"]) if p in runs else "–" for p in PROTOCOL_TITLES}
         if "p3" in runs:
             o = runs["p3"]["overall"]
@@ -117,19 +150,54 @@ def build_comparison(results_dir: Path) -> str:
             p3 = f"{mae['p3']} [{_num(lo)}; {_num(hi)}] | {_num(o['mape'])} | {_num(o['r2'], 3)} | {_num(o['bias'])}"
         else:
             p3 = "– | – | – | –"
-        lines.append(f"| {label} | {mae['p1']} | {mae['p2']} | {p3} |")
+        lines.append(f"| {label} | {first.get('mask', 'manual')} | {mae['p1']} | {mae['p2']} | {p3} |")
+    return "\n".join(lines) + "\n"
+
+
+def build_segmentation(results_dir: Path) -> str:
+    """Resume Dice e IoU das máscaras previstas, por protocolo."""
+    lines = ["| Protocolo | Máscaras | Dice médio | IoU médio | Dice mínimo |", "|---|---|---|---|---|"]
+    for protocol in PROTOCOL_TITLES:
+        file = Path(results_dir) / "segmentation" / protocol / "metrics.csv"
+        if file.is_file():
+            scores = pd.read_csv(file)
+            lines.append(
+                f"| {protocol.upper()} | {len(scores)} | {_num(scores['dice'].mean(), 3)} | "
+                f"{_num(scores['iou'].mean(), 3)} | {_num(scores['dice'].min(), 3)} |"
+            )
+    return "\n".join(lines) + "\n"
+
+
+def build_cross_domain(results_dir: Path) -> str:
+    """Rodadas em que o modelo treina num conjunto e é testado em outro, sem ajuste."""
+    lines = ["| Experimento | Treino | Teste | n | MAE (g) [IC 95%] | MAPE (%) | R² | Viés (g) |",
+             "|---|---|---|---|---|---|---|---|"]
+    for path in sorted(Path(results_dir).glob("*/cruzado/metrics.json")):
+        run = json.loads(path.read_text(encoding="utf-8"))
+        o = run["overall"]
+        lo, hi = o["mae_ci"]
+        lines.append(
+            f"| {run['experiment']} | {run['train']} | {run['test']} | {o['n']} | "
+            f"{_num(o['mae'])} [{_num(lo)}; {_num(hi)}] | {_num(o['mape'])} | {_num(o['r2'], 3)} | {_num(o['bias'])} |"
+        )
     return "\n".join(lines) + "\n"
 
 
 def main() -> None:
-    tables = build_tables(REPO_ROOT / "results")
-    text = REPORT.read_text(encoding="utf-8") if REPORT.is_file() else f"# Relatório da Fase 1A\n\n{BEGIN}\n{END}\n"
-    head, rest = text.split(BEGIN, 1)
-    tail = rest.split(END, 1)[1]
-    REPORT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.write_text(f"{head}{BEGIN}\n\n{tables}\n{END}{tail}", encoding="utf-8")
-    print(f"tabelas gravadas em {REPORT.relative_to(REPO_ROOT)}")
-    COMPARISON.write_text(COMPARISON_HEADER + build_comparison(REPO_ROOT / "results"), encoding="utf-8")
+    results = REPO_ROOT / "results"
+    text = (
+        COMPARISON_HEADER
+        + build_comparison(results)
+        + "\n## Segmentação\n\nMáscara prevista contra a máscara manual, sempre por uma U-Net que não viu a foto.\n\n"
+        + build_segmentation(results)
+        + "\n## Domínio cruzado\n\nO modelo treina num conjunto (a coleta ou o FDWE) e é testado no outro, sem ajuste.\n\n"
+        + build_cross_domain(results)
+        + "\n## Sensibilidade a pesos suspeitos\n\nO melhor candidato em P3, com todos os peixes e sem os que têm peso anotado suspeito (`SUSPECT_WEIGHTS`). Os peixes continuam no treino; só saem da conta do erro.\n\n"
+        + build_sensitivity(results)
+        + "\n## Tabelas por protocolo\n\n"
+        + build_tables(results)
+    )
+    COMPARISON.write_text(text, encoding="utf-8")
     print(f"comparação gravada em {COMPARISON.relative_to(REPO_ROOT)}")
 
 

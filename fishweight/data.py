@@ -14,6 +14,20 @@ EXCLUDED_IMAGES: dict[str, str] = {
     "IMG_20221126_163700.jpg": "peso anotado 0,60 g; os outros lambaris têm 50 e 60 g",
 }
 
+# Pesos que destoam dos peixes de mesmo tamanho, sem prova de erro. Ficam no
+# conjunto (tirar um peixe só porque o modelo erra seria escolher o resultado);
+# o relatório mostra as métricas com e sem eles.
+SUSPECT_WEIGHTS: dict[str, str] = {
+    "IMG_20220110_152533.jpg": "curimatã de 33 cm com 1.760 g; os de 34 a 37 cm pesam de 1.100 a 1.385 g",
+}
+
+# Medidas de fita que não batem com a máscara. O peso desses peixes é usado
+# normalmente; o comprimento e a largura não servem de alvo nem de escala.
+UNRELIABLE_MEASURES: dict[str, str] = {
+    "IMG_20220110_150640.jpg": "comprimento anotado de 8 cm; a máscara indica cerca de 18 cm",
+    "IMG_20220110_150758.jpg": "comprimento anotado de 7 cm; a máscara indica cerca de 16 cm",
+}
+
 _MAIN_SPECIES = {"tambaqui", "tilápia", "curimatã"}
 _EARLY_SESSIONS = {"20220110", "20220212"}
 

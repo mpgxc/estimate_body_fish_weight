@@ -34,11 +34,16 @@ def run_experiment(
     fit_predict: FitPredict,
     results_dir: Path = REPO_ROOT / "results",
     reference_only: bool = False,
+    mask: str = "manual",
 ) -> dict:
     """Avalia ``fit_predict`` em todas as dobras de ``protocol``.
 
     Grava ``<results_dir>/<name>/<protocol>/predictions.csv`` e
     ``metrics.json`` e devolve o conteúdo deste último.
+
+    Args:
+        mask: De onde vêm os atributos do teste (``manual`` ou ``predita``);
+            fica registrado no ``metrics.json``.
 
     Raises:
         ValueError: A tabela não cobre exatamente as imagens das dobras, ou
@@ -61,7 +66,8 @@ def run_experiment(
     for fold in folds:
         train = rows.loc[fold["train"]].reset_index(drop=True)
         test = rows.loc[fold["test"]].reset_index(drop=True)
-        y_pred = np.asarray(fit_predict(train, test.drop(columns="weight")), dtype=float)
+        visible = test.drop(columns="weight").assign(fold=fold["name"])
+        y_pred = np.asarray(fit_predict(train, visible), dtype=float)
         if y_pred.shape != (len(test),):
             raise ValueError(
                 f"dobra {fold['name']}: {y_pred.shape} predições para {len(test)} peixes"
@@ -88,6 +94,7 @@ def run_experiment(
         "experiment": name,
         "protocol": protocol,
         "reference_only": reference_only,
+        "mask": mask,
         "overall": overall,
         "per_fold": {k: _metrics(g) for k, g in predictions.groupby("fold")},
         "per_species_group": {k: _metrics(g) for k, g in predictions.groupby("species_group")},

@@ -5,8 +5,11 @@ Três variantes por modelo:
 * ``e1_nativo_<Modelo>``: 12 atributos de forma, P1 a P3.
 * ``e1_nativo_especie_oraculo_<Modelo>``: os mesmos atributos mais a espécie
   anotada. Referência: a ferramenta não terá a espécie.
-* ``e1_monografia_<Modelo>``: reprodução do notebook
-  ``notebooks/04_regression/regression_last_execution.ipynb``, só em P1.
+* ``e1_nativo_<Modelo>_escala_sessao``: os atributos convertidos para cm e
+  cm² com a escala de cada sessão, estimada pela fita. Referência: mede
+  quanto uma referência de escala na caixa ajudaria.
+* ``e1_monografia_<Modelo>``: reprodução do notebook de regressão da
+  monografia (``monografia/notebooks/04_regression/regression_last_execution.ipynb``), só em P1.
   Referência: a seleção de atributos usa o conjunto inteiro e inclui a
   espécie anotada.
 
@@ -23,9 +26,15 @@ from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
+from experiments.common import run_and_report, run_both_masks
 from fishweight.data import DATA_DIR, REPO_ROOT, load_manifest
-from fishweight.experiment import FitPredict, run_experiment
-from fishweight.features import FEATURE_NAMES, build_feature_table
+from fishweight.experiment import FitPredict
+from fishweight.features import (
+    FEATURE_NAMES,
+    build_feature_table,
+    calibrate_features,
+    session_scale,
+)
 from fishweight.metrics import bootstrap_ci, regression_metrics
 from fishweight.regressors import make_models
 from fishweight.splits import PROTOCOLS, load_splits
@@ -63,26 +72,23 @@ def native(model_name: str, with_species: bool) -> FitPredict:
 
 def run_native() -> None:
     table = build_feature_table(load_manifest())
+    calibrated = calibrate_features(table, session_scale(table))
     for model_name in make_models():
         for prefix, with_species in (("e1_nativo", False), ("e1_nativo_especie_oraculo", True)):
-            for protocol in PROTOCOLS:
-                overall = run_experiment(
-                    f"{prefix}_{model_name}",
-                    protocol,
-                    table,
-                    native(model_name, with_species),
-                    reference_only=with_species,
-                )["overall"]
-                print(
-                    f"{prefix}_{model_name} {protocol} MAE={overall['mae']:.1f} "
-                    f"MAPE={overall['mape']:.1f} R2={overall['r2']:.3f}"
-                )
+            run_both_masks(
+                f"{prefix}_{model_name}", table, native(model_name, with_species), with_species
+            )
+        for protocol in PROTOCOLS:
+            run_and_report(
+                f"e1_nativo_{model_name}_escala_sessao", protocol, calibrated,
+                native(model_name, with_species=False), reference_only=True,
+            )
 
 
 def run_monograph() -> None:
     """Refaz o procedimento do notebook, com as 245 linhas e os CSVs originais."""
     annotations = pd.read_csv(DATA_DIR / "annotations.csv")
-    features = pd.read_csv(REPO_ROOT / "combined_features.csv")
+    features = pd.read_csv(REPO_ROOT / "data/monografia/combined_features.csv")
     data = annotations.merge(features, left_on="img", right_on="label", validate="one_to_one")
     data = data.drop(columns="label")
     data["specie"] = LabelEncoder().fit_transform(data["specie"])
@@ -112,6 +118,7 @@ def run_monograph() -> None:
             "experiment": f"e1_monografia_{model_name}",
             "protocol": "p1",
             "reference_only": True,
+            "mask": "manual",
             "overall": overall,
             "selected_features": selected,
             "design_matrix_rank": rank,

@@ -61,3 +61,20 @@ def test_stale_split_is_rejected(table, tmp_path):
 def test_wrong_number_of_predictions_is_rejected(table, tmp_path):
     with pytest.raises(ValueError, match="dobra a:"):
         run_experiment("short", "p3", table, lambda train, test: np.zeros(1), results_dir=tmp_path)
+
+
+def test_test_rows_carry_their_fold_name(table, tmp_path):
+    seen = []
+
+    def spy(train, test):
+        seen.append(set(test["fold"]))
+        return train_mean(train, test)
+
+    run_experiment("spy", "p3", table, spy, results_dir=tmp_path)
+    assert seen == [{"a"}, {"b"}, {"c"}]
+
+
+def test_metrics_record_the_mask_source(table, tmp_path):
+    assert run_experiment("m", "p3", table, train_mean, results_dir=tmp_path)["mask"] == "manual"
+    predicted = run_experiment("p", "p3", table, train_mean, results_dir=tmp_path, mask="predita")
+    assert predicted["mask"] == "predita"

@@ -8,10 +8,10 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from experiments.common import run_and_report, run_both_masks
 from fishweight.allometric import AllometricRegressor
 from fishweight.data import load_manifest
-from fishweight.experiment import run_experiment
-from fishweight.features import build_feature_table
+from fishweight.features import build_feature_table, calibrate_features, session_scale
 from fishweight.splits import PROTOCOLS
 
 
@@ -34,14 +34,13 @@ VARIANTS = {
 def main() -> None:
     table = build_feature_table(load_manifest())
     for name, (fit_predict, reference_only) in VARIANTS.items():
-        for protocol in PROTOCOLS:
-            overall = run_experiment(
-                name, protocol, table, fit_predict, reference_only=reference_only
-            )["overall"]
-            print(
-                f"{name} {protocol} MAE={overall['mae']:.1f} "
-                f"MAPE={overall['mape']:.1f} R2={overall['r2']:.3f}"
-            )
+        run_both_masks(name, table, fit_predict, reference_only)
+
+    # Quanto uma referência de escala na caixa ajudaria: a área entra em cm², com a
+    # escala de cada sessão estimada pela fita. Referência, porque usa a fita.
+    calibrated = calibrate_features(table, session_scale(table))
+    for protocol in PROTOCOLS:
+        run_and_report("e0_global_escala_sessao", protocol, calibrated, fit_global, reference_only=True)
 
 
 if __name__ == "__main__":
