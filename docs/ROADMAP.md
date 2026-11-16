@@ -1,8 +1,27 @@
 # Roadmap
 
-**Agora:** código dos Planos 1B, 1C, 1D e 1E pronto e testado. O próximo passo é seu: enviar o branch e executar `remote/executar.ipynb` num ambiente com GPU. Enquanto isso, o que pode avançar aqui é o Plano 3A (referências do artigo).
+**Agora:** código dos Planos 1B, 1C, 1D e 1E pronto, testado e enviado ao GitHub (branch `fase-1a-base-e-pisos`). O próximo passo é seu: executar `remote/executar.ipynb` num ambiente com GPU. Enquanto isso, o que pode avançar aqui é o Plano 3A (referências do artigo).
 
 Desenho aprovado: [`docs/superpowers/specs/2026-11-15-evolucao-fishweight-design.md`](superpowers/specs/2026-11-15-evolucao-fishweight-design.md)
+
+## Próximos passos
+
+Em ordem. Os passos 1 e 3 não dependem um do outro e podem andar ao mesmo tempo.
+
+| | Passo | Quem | Depende de |
+|---|---|---|---|
+| [ ] | **1. Executar em GPU.** Abrir `remote/executar.ipynb` no Kaggle ou no Colab, rodar tudo, baixar `resultados_fishweight.zip` e descompactar na raiz do repositório. É a primeira execução do notebook: se a etapa de testes falhar, parar e trazer a saída | Você | — |
+| [ ] | **2. Ler os resultados.** Regenerar `comparacao.md`, escrever a leitura de 1B a 1E em `docs/experiments/`, marcar as caixas dos planos e atualizar a tabela resumida do `README.md` | Assistente | Passo 1 |
+| [ ] | **3. Plano 3A, referências.** Montar o `.bib` com cada referência conferida na fonte e escrever a seção de trabalhos relacionados | Assistente | — |
+| [ ] | **4. Plano 1F, fechamento.** Intervalos de predição, comparação pareada entre as técnicas, `relatorio-fase1.md` e exportação do modelo vencedor em ONNX | Assistente | Passo 2 |
+| [ ] | **5. Parada: confirmar o vencedor.** Ler `relatorio-fase1.md` e dizer se o modelo escolhido segue para a ferramenta | Você | Passo 4 |
+| [ ] | **6. Fase 2, ferramenta.** Planos 2A (motor e API), 2B (interface) e 2C (integração), nessa ordem. Inclui a referência de escala na caixa | Assistente | Passo 5 |
+| [ ] | **7. Fase 3, artigo.** Planos 3B (métodos e resultados) e 3C (fechamento). Antes de formatar, conferir a chamada do SBIAgro: datas e limite de páginas | Assistente; você e o orientador revisam | Passos 3 e 6 |
+
+Pendências pequenas, sem ordem:
+
+- [ ] Conferir se os diagramas do `README.md` aparecem animados na página do GitHub (só foram testados localmente).
+- [ ] `docs/experiments/tecnicas.md` ainda usa o diagrama antigo em Mermaid; trocar pelos SVGs de `docs/diagramas/` quando a página for revisada.
 
 ## Como acompanhar
 
@@ -57,7 +76,7 @@ Cada plano daqui em diante tem duas caixas: **código** (pronto e testado aqui) 
 
 ## Pendências suas
 
-- [ ] **Executar em GPU:** fazer commit e `git push` do branch `fase-1a-base-e-pisos`, abrir `remote/executar.ipynb` no Kaggle ou no Colab, rodar tudo, baixar `resultados_fishweight.zip` e descompactar na raiz do repositório. Sem isso não há máscara prevista em P2 e P3 nem resultado de E2 a E5.
+- [ ] **Executar em GPU:** o branch `fase-1a-base-e-pisos` já está no GitHub. Falta abrir `remote/executar.ipynb` no Kaggle ou no Colab, rodar tudo, baixar `resultados_fishweight.zip` e descompactar na raiz do repositório. Sem isso não há máscara prevista em P2 e P3 nem resultado de E2 a F2.
 
 ## Decididas por recomendação
 
@@ -79,3 +98,4 @@ Resolvidas em 2026-11-15 pela opção recomendada, a seu pedido. Evidências e c
 | 2026-11-15 | Repositório reorganizado: código original da monografia (notebooks, scripts, modelo Keras) reunido em `monografia/`; PDF e figuras em `docs/monografia/`; tabelas antigas em `data/monografia/`; removidos só duplicados (`combined_no_29_11_22/`, `ESTRUTURA.md`, utilitários sem uso). Implementados E2, E3, E4 e E5 (`fishweight/direct.py` e scripts), testados com redes minúsculas. 64 testes |
 | 2026-11-15 | FDWE copiado para `data/external/fdwe/` e inspecionado (1.086 imagens, 2.216 peixes, CC BY 4.0). Implementados o leitor (`fishweight/fdwe.py`) e os experimentos F1 e F2, testados com uma amostra de 50 imagens e rede minúscula |
 | 2026-11-15 | Cinco perguntas sobre os dados resolvidas pela opção recomendada (`decisoes-dados.md`). Novas variantes de referência `*_escala_sessao`, tabela de sensibilidade a pesos suspeitos e medidas de fita duvidosas fora da saída auxiliar. 82 testes |
+| 2026-11-16 | Trabalho commitado e enviado ao GitHub. Máscaras previstas (PNG) tiradas do Git; resultados em texto continuam versionados. `README.md` reescrito com nove diagramas animados (`docs/diagramas/`), um exemplo real e uma seção por técnica |

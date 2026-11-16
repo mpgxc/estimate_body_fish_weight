@@ -67,6 +67,7 @@ flowchart LR
 | `data/splits/`, `data/features/` | Fixed folds; mask features (`manual.csv`, `predita_<protocol>.csv`) and frozen embeddings (`embeddings_<backbone>.npz`) |
 | `data/monografia/` | The thesis's two feature tables: `combined_features.csv` (used by `e1_monografia`) and `features_from_unet_predictions.csv` (its `label` column defines the P1 test set) |
 | `docs/superpowers/plans/` | Implementation plans, one per roadmap row, with per-step checkboxes |
+| `docs/diagramas/` | The README's figures: nine animated SVGs (one per technique, plus overview and evaluation) and `exemplo-peixe.jpg`. Edited by hand, no generator; a new technique gets its figure and README section in the same commit |
 
 `monografia/` holds the author's original thesis code (`notebooks/`, `commons.py`, `feature_extraction.py`, `handcraft_segmentation/`, `yolo_v8_instance_seg/`, `models/unet_model.h5`). **It is his record: never edit or delete it.** Nothing in `fishweight/` or `experiments/` imports it; it was the reference for `e1_monografia` and for the U-Net architecture.
 

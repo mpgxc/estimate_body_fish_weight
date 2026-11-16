@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 728" font-family="'Inter', -apple-system, 'Segoe UI', Roboto, system-ui, sans-serif">
+
+  <style>
+    .flow { fill: none; stroke-width: 1.5; stroke-dasharray: 4 14; animation: flow 1.4s linear infinite; }
+    @keyframes flow { from { stroke-dashoffset: 18; } to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .flow { animation: none; opacity: 0; } .token { display: none; } }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="7.5" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#a8a29a"/></marker>
+    <marker id="arrow-dash" markerWidth="9" markerHeight="7" refX="7.5" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#7a7a82"/></marker>
+    <marker id="arrow-green" markerWidth="9" markerHeight="7" refX="7.5" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#1a9970"/></marker>
+    <marker id="arrow-coral" markerWidth="9" markerHeight="7" refX="7.5" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#b5432a"/></marker>
+  </defs>
+
+  <rect width="1000" height="728" fill="#ffffff"/>
+
+  <text x="500" y="44" fill="#8a8a8a" font-size="15" font-weight="600" text-anchor="middle" letter-spacing="0.12em" style="text-transform:uppercase">da foto ao peso: três famílias de técnicas</text>
+
+  <!-- conectores -->
+  <path id="a-foto-unet" d="M 390 108 C 280 108, 200 140, 200 208" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-foto-rede" d="M 610 108 C 720 108, 800 140, 800 208" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-unet-medidas" d="M 200 280 L 200 344" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-medidas-regressor" d="M 200 416 L 200 488" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-medidas-hibrido" d="M 320 380 C 400 380, 450 420, 450 488" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-rede-hibrido" d="M 680 244 C 600 244, 550 380, 550 488" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-rede-direta" d="M 800 280 L 800 488" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-regressor-peso" d="M 200 560 C 200 630, 300 660, 390 660" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-hibrido-peso" d="M 500 560 L 500 632" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path id="a-direta-peso" d="M 800 560 C 800 630, 700 660, 610 660" stroke="#a8a29a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- fluxo (para 8 px antes da ponta) -->
+  <path class="flow" d="M 200 280 L 200 336" stroke="#7a7a82"/>
+  <path class="flow" d="M 200 416 L 200 480" stroke="#7a7a82"/>
+  <path class="flow" d="M 800 280 L 800 480" stroke="#7a7a82"/>
+  <path class="flow" d="M 500 560 L 500 624" stroke="#7a7a82"/>
+
+  <!-- rótulos das setas -->
+  <rect x="222.65" y="305" width="54.7" height="15" fill="#ffffff"/>
+  <text x="250" y="316" fill="#8a8a8a" font-size="11" text-anchor="middle">máscara</text>
+  <rect x="816.75" y="377" width="42.5" height="15" fill="#ffffff"/>
+  <text x="838" y="388" fill="#8a8a8a" font-size="11" text-anchor="middle">vetor</text>
+
+  <!-- blocos -->
+  <rect x="390" y="80" width="220" height="56" rx="28" fill="#ffffff"/>
+  <rect x="390" y="80" width="220" height="56" rx="28" fill="#f1efe8" stroke="#d8d4c4" stroke-width="1.25"/>
+  <text x="500" y="113" fill="#4a4a4a" font-size="15" font-weight="500" text-anchor="middle">foto</text>
+
+  <rect x="80" y="208" width="240" height="72" rx="10" fill="#ffffff"/>
+  <rect x="80" y="208" width="240" height="72" rx="10" fill="#eeedfe" stroke="#b9b5e8" stroke-width="1.25"/>
+  <text x="200" y="240" fill="#3a3560" font-size="15" font-weight="500" text-anchor="middle">U-Net</text>
+  <text x="200" y="258" fill="#6a63b0" font-size="11" font-weight="500" text-anchor="middle">segmenta o corpo do peixe</text>
+
+  <rect x="680" y="208" width="240" height="72" rx="10" fill="#ffffff"/>
+  <rect x="680" y="208" width="240" height="72" rx="10" fill="#eeedfe" stroke="#b9b5e8" stroke-width="1.25"/>
+  <text x="800" y="240" fill="#3a3560" font-size="15" font-weight="500" text-anchor="middle">rede de visão</text>
+  <text x="800" y="258" fill="#6a63b0" font-size="11" font-weight="500" text-anchor="middle">resume a foto num vetor</text>
+
+  <rect x="80" y="344" width="240" height="72" rx="10" fill="#ffffff"/>
+  <rect x="80" y="344" width="240" height="72" rx="10" fill="#eeedfe" stroke="#b9b5e8" stroke-width="1.25"/>
+  <text x="200" y="376" fill="#3a3560" font-size="15" font-weight="500" text-anchor="middle">12 medidas da máscara</text>
+  <text x="200" y="394" fill="#6a63b0" font-size="11" font-weight="500" text-anchor="middle">área · eixos · perímetro</text>
+
+  <rect x="80" y="488" width="240" height="72" rx="10" fill="#ffffff"/>
+  <rect x="80" y="488" width="240" height="72" rx="10" fill="#e7f1fb" stroke="#a8c8e8" stroke-width="1.25"/>
+  <text x="200" y="520" fill="#2a5580" font-size="15" font-weight="500" text-anchor="middle">regressor</text>
+  <text x="200" y="538" fill="#3a70a8" font-size="11" font-weight="500" text-anchor="middle">E0 · E1</text>
+
+  <rect x="380" y="488" width="240" height="72" rx="10" fill="#ffffff"/>
+  <rect x="380" y="488" width="240" height="72" rx="10" fill="#e7f1fb" stroke="#a8c8e8" stroke-width="1.25"/>
+  <text x="500" y="520" fill="#2a5580" font-size="15" font-weight="500" text-anchor="middle">híbrido</text>
+  <text x="500" y="538" fill="#3a70a8" font-size="11" font-weight="500" text-anchor="middle">E4 · E5</text>
+
+  <rect x="680" y="488" width="240" height="72" rx="10" fill="#ffffff"/>
+  <rect x="680" y="488" width="240" height="72" rx="10" fill="#e7f1fb" stroke="#a8c8e8" stroke-width="1.25"/>
+  <text x="800" y="520" fill="#2a5580" font-size="15" font-weight="500" text-anchor="middle">regressão direta</text>
+  <text x="800" y="538" fill="#3a70a8" font-size="11" font-weight="500" text-anchor="middle">E2 · E3 · F1</text>
+
+  <rect x="390" y="632" width="220" height="56" rx="28" fill="#ffffff"/>
+  <rect x="390" y="632" width="220" height="56" rx="28" fill="#f1efe8" stroke="#d8d4c4" stroke-width="1.25"><animate attributeName="stroke-width" values="1.25;2.5;1.25" dur="0.6s" begin="t3_0.end"/></rect>
+  <text x="500" y="665" fill="#4a4a4a" font-size="15" font-weight="500" text-anchor="middle">peso em gramas</text>
+
+  <!-- pontos: percorrem os conectores em sequência e descansam 1 s -->
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t0_0" dur="3.17s" begin="0.4s; t3_0.end+1s"><mpath href="#a-foto-unet"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.17s" begin="t0_0.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t0_1" dur="3.17s" begin="0.4s; t3_0.end+1s"><mpath href="#a-foto-rede"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.17s" begin="t0_1.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t1_0" dur="2.77s" begin="t0_0.end"><mpath href="#a-rede-direta"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="2.77s" begin="t1_0.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t1_1" dur="0.90s" begin="t0_0.end"><mpath href="#a-unet-medidas"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="0.90s" begin="t1_1.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t2_0" dur="3.99s" begin="t1_0.end"><mpath href="#a-rede-hibrido"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.99s" begin="t2_0.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t2_1" dur="2.55s" begin="t1_0.end"><mpath href="#a-medidas-hibrido"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="2.55s" begin="t2_1.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t2_2" dur="0.96s" begin="t1_0.end"><mpath href="#a-medidas-regressor"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="0.96s" begin="t2_2.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t3_0" dur="3.14s" begin="t2_0.end"><mpath href="#a-regressor-peso"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.14s" begin="t3_0.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t3_1" dur="3.14s" begin="t2_0.end"><mpath href="#a-direta-peso"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.14s" begin="t3_1.begin"/>
+  </circle>
+  <circle class="token" r="3.5" fill="#6a63b0" opacity="0">
+    <animateMotion id="t3_2" dur="0.96s" begin="t2_0.end"><mpath href="#a-hibrido-peso"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="0.96s" begin="t3_2.begin"/>
+  </circle>
+
+</svg>
