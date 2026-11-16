@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_RidgeRegression",
  "protocol": "p2",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 732,
   "mae": 33.710397144112285,

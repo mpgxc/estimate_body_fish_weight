@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_LinearRegression",
  "protocol": "p1",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 74,
   "mae": 33.648523315464566,

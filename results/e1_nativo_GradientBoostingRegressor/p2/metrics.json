@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_GradientBoostingRegressor",
  "protocol": "p2",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 732,
   "mae": 36.108064584856024,

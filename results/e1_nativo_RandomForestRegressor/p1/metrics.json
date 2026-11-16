@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_RandomForestRegressor",
  "protocol": "p1",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 74,
   "mae": 38.4572972972973,

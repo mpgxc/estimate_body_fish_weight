@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_PolyRegression",
  "protocol": "p3",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 244,
   "mae": 72.77457717986479,

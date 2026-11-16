@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_LassoRegression",
  "protocol": "p3",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 244,
   "mae": 40.62557024489201,

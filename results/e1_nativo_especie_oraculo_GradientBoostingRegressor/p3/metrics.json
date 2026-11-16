@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_especie_oraculo_GradientBoostingRegressor",
  "protocol": "p3",
  "reference_only": true,
+ "mask": "manual",
  "overall": {
   "n": 244,
   "mae": 47.28264370659687,

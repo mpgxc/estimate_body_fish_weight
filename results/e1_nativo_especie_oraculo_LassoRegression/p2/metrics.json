@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_especie_oraculo_LassoRegression",
  "protocol": "p2",
  "reference_only": true,
+ "mask": "manual",
  "overall": {
   "n": 732,
   "mae": 30.648729515464005,

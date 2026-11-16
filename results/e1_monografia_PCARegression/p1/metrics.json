@@ -2,6 +2,7 @@
  "experiment": "e1_monografia_PCARegression",
  "protocol": "p1",
  "reference_only": true,
+ "mask": "manual",
  "overall": {
   "n": 74,
   "mae": 69.5514061043456,

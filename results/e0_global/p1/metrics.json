@@ -2,6 +2,7 @@
  "experiment": "e0_global",
  "protocol": "p1",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 74,
   "mae": 43.836824316954484,

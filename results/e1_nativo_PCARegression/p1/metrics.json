@@ -2,6 +2,7 @@
  "experiment": "e1_nativo_PCARegression",
  "protocol": "p1",
  "reference_only": false,
+ "mask": "manual",
  "overall": {
   "n": 74,
   "mae": 48.02564257068527,
