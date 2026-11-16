@@ -13,7 +13,7 @@ from fishweight.data import REPO_ROOT, load_manifest
 PROTOCOLS = ("p1", "p2", "p3")
 SPLITS_DIR = REPO_ROOT / "data/splits"
 # As 74 imagens deste arquivo são o conjunto de teste da monografia.
-P1_TEST_SOURCE = REPO_ROOT / "features_from_unet_predictions.csv"
+P1_TEST_SOURCE = REPO_ROOT / "data/monografia/features_from_unet_predictions.csv"
 
 
 class Fold(TypedDict):

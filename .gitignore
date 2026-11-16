@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-data/coletas
 # C extensions
 *.so
 
@@ -162,3 +161,6 @@ cython_debug/
 # dados externos e rascunho de execução de planos
 data/external/
 .superpowers/
+data/cache/
+# máscaras previstas: binárias, às centenas, só se refazem com GPU; ficam fora do Git
+results/segmentation/*/masks/
