@@ -1,6 +1,6 @@
 # Relatório da Fase 1A
 
-Pisos E0 (alométrico) e E1 (`regionprops`) com máscara manual, 244 peixes, nos protocolos P1, P2 e P3. As tabelas abaixo são geradas por `uv run python -m experiments.report`; o texto desta seção foi escrito à mão a partir delas.
+Pisos E0 (alométrico) e E1 (`regionprops`) com máscara manual, 244 peixes, nos protocolos P1, P2 e P3. As tabelas abaixo são o retrato do fim do Plano 1A e não são mais regeneradas; a versão viva, com todas as técnicas, está em [`comparacao.md`](comparacao.md).
 
 ## Leitura
 
@@ -20,6 +20,8 @@ Sobre os intervalos: são de 95%, por bootstrap, reamostrando peixes (em P2 cada
 
 **6. A pior sessão é 2022-10-29, e a causa provável é a escala.** O MAE é 74,6 g e o viés também é +74,6 g: todas as 25 predições ficam acima do peso real. Nessa sessão a mediana é 130,7 px/cm, contra 125,4 no conjunto (4,2% a mais), o que infla a área em 8,6%. A câmera parece ter ficado mais perto do peixe naquele dia. As duas imagens sinalizadas não explicam isso: estão em outra sessão.
 
+> **Atualização posterior:** a hipótese da escala foi testada e a evidência é mista (a correção ajuda o E1 e piora o E0). Ela passa de "causa provável" a hipótese. Ver [`decisoes-dados.md`](decisoes-dados.md).
+
 **7. A sessão de 2022-01-10 pode ficar.** A mediana dela é 126,1 px/cm, contra 125,4 no conjunto. A variação alta vinha de duas traíras, de 120 e 95 g, cujo comprimento anotado (8 e 7 cm) não bate com a máscara, que indica cerca de 18 e 16 cm; as outras três traíras, de 220 a 260 g, têm 22 a 26 cm. O erro está na anotação de `length`, não na foto, e não afeta os modelos que preveem peso. Ele importa no Plano 1C, que usa o comprimento como saída auxiliar. O MAE alto do grupo `2022-inicio` (73,9 g) vem em boa parte do curimatã de 1.760 g citado acima, previsto em 1.033 g em P3.
 
 ## Decisões para o autor
@@ -29,8 +31,6 @@ Sobre os intervalos: são de 95%, por bootstrap, reamostrando peixes (em P2 cada
 - **Sessão 2022-10-29.** Houve mudança de caixa, de altura ou de celular nesse dia? Se a distância variou, a ferramenta precisa de uma referência de escala, ao contrário do que o desenho assume hoje.
 
 ## Tabelas
-
-<!-- tabelas:início -->
 
 ### P1 — reprodução (70/30 da monografia)
 
@@ -138,5 +138,3 @@ Sobre os intervalos: são de 95%, por bootstrap, reamostrando peixes (em P2 cada
 |---|---|---|---|---|---|
 | IMG_20220110_150640.jpg | 2022-inicio | traíra | 8,0 | 280,6 | 123,8 |
 | IMG_20220110_150758.jpg | 2022-inicio | traíra | 7,0 | 286,2 | 128,2 |
-
-<!-- tabelas:fim -->

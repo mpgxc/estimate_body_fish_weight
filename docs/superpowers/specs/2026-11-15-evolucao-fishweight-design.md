@@ -139,7 +139,9 @@ Valores ilustrativos. `species` só existe se o modelo vencedor tiver saída de 
 
 `quality.is_valid` vira `false`, com o motivo em `reasons`, quando: a foto não tem a resolução e a proporção das fotos da coleta (4624×3472), não há peixe, há mais de uma região grande, a máscara encosta na borda, ou a área está fora da faixa vista no treino. Nesses casos a interface mostra o aviso em vez de um número confiante.
 
-**Condição de uso (decisão sua):** a ferramenta será usada sempre com o mesmo celular e a mesma caixa da coleta. Não há calibração de escala; fotos de outra resolução são recusadas. A tela de captura explica o arranjo.
+**Condição de uso (decisão sua):** a ferramenta será usada sempre com o mesmo celular e a mesma caixa da coleta; fotos de outra resolução são recusadas. A tela de captura explica o arranjo.
+
+**Referência de escala (acrescentada em 2026-11-15):** um marcador de tamanho conhecido fica fixo no fundo da caixa e é lido em cada foto. Se a escala medida fugir da usada no treino, a ferramenta corrige as medidas ou recusa a foto. Motivo: numa das sessões a razão entre pixels e centímetros é 4% maior, e os dados não dizem se foi a câmera ou a fita; ver `docs/experiments/decisoes-dados.md`.
 
 ### Componentes
 
@@ -179,14 +181,15 @@ Meta de desempenho: p95 abaixo de 1 segundo entre o envio da foto e a resposta, 
 
 ## Fase 3 — Artigo
 
-- **Formato**: LaTeX, modelo de artigos da SBC, em português, em `paper/`, com até 12 páginas no texto principal. Ainda não há evento ou revista definido, então o conteúdo fica separado do modelo: um arquivo por seção, tabelas e figuras como arquivos gerados, referências em BibTeX. Trocar de modelo depois é trocar o arquivo principal.
+- **Formato**: LaTeX, modelo de artigos da SBC, em português, em `paper/`, com até 12 páginas no texto principal. A primeira opção de destino é o SBIAgro (Congresso Brasileiro de Agroinformática); a chamada da próxima edição ainda precisa ser conferida. O conteúdo fica separado do modelo: um arquivo por seção, tabelas e figuras como arquivos gerados, referências em BibTeX. Trocar de modelo depois é trocar o arquivo principal.
+- **Coleta**: seis dias em 2022 (10/01, 12/02, 29/10, 22/11, 26/11 e 29/11), conforme a data gravada nas fotos.
 - **Material suplementar**: as tabelas que não couberem nas 12 páginas (todos os protocolos, as duas máscaras, por espécie) vão para `paper/suplementar/`.
 - **Autores**: Mateus Pinto Garcia e Romuere Rodrigues Veloso e Silva (UFPI).
 - **Tese**: comparação de métodos de estimativa de peso por imagem única em espécies de piscicultura do Piauí, com avaliação separada por dia de coleta, e a ferramenta resultante.
 - **Seções**: Introdução; Trabalhos Relacionados; Materiais e Métodos (coleta, anotação, protocolos); Experimentos; Resultados e Discussão; Ferramenta; Limitações; Conclusão.
 - **Reprodutibilidade**: um script lê `results/` e gera todas as tabelas e figuras. Nenhum número é digitado à mão.
 - **Referências**: cada entrada do `.bib` é conferida pelo DOI ou pela página do periódico antes de entrar. Os links da pesquisa do ChatGPT são ponto de partida, não fonte; parte deles não sobreviveu ao compartilhamento.
-- **Limitações declaradas**: 244 peixes, uma propriedade, uma câmera, desbalanceamento de espécies, sem amostra independente nova.
+- **Limitações declaradas**: 244 peixes, uma propriedade, uma câmera, desbalanceamento de espécies, sem amostra independente nova, escala não conferida por referência nas fotos da coleta, um peso e duas medidas de fita suspeitos.
 - **Entrega**: PDF do artigo e PDF do suplementar compilados, completos, prontos para sua revisão e a do orientador.
 
 O trabalho relacionado pode ser escrito em paralelo à Fase 1. Resultados e Ferramenta dependem das fases anteriores.
@@ -211,13 +214,14 @@ pyproject.toml
 
 ## Decisões minhas (não suas) — conteste se discordar
 
-1. **PyTorch em vez de TensorFlow** para tudo que for novo, com a U-Net treinada de novo. Motivo: um só framework, exportação ONNX direta, e os modelos da pesquisa (DINOv2, ConvNeXt) estão nesse ecossistema. O `unet_model.h5` fica como registro da monografia.
-2. **Notebooks, cópias na raiz, `handcraft_segmentation/` e `yolo_v8_instance_seg/` ficam intocados** como registro da monografia. O trabalho novo é feito em scripts.
+1. **PyTorch em vez de TensorFlow** para tudo que for novo, com a U-Net treinada de novo. Motivo: um só framework, exportação ONNX direta, e os modelos da pesquisa (DINOv2, ConvNeXt) estão nesse ecossistema.
+2. **O código original da monografia fica intocado**, reunido em `monografia/` (notebooks, `commons.py`, `feature_extraction.py`, `handcraft_segmentation/`, `yolo_v8_instance_seg/`, `models/unet_model.h5`). O PDF e as figuras ficam em `docs/monografia/` e as duas tabelas de atributos usadas na reprodução, em `data/monografia/`. O trabalho novo é feito em scripts.
 3. **E0 (alométrico) foi acrescentado** à lista E1–E5 da pesquisa, por ser o piso que os revisores esperam.
 4. **Saída auxiliar de comprimento e largura** (E3b) foi acrescentada porque você já tem essas medidas.
 5. **Sem vídeo ao vivo e sem Prometheus/Grafana** na primeira versão.
 6. **Câmera nativa em vez de vídeo do navegador** na tela de captura, para manter a mesma resolução das fotos de treino.
 7. **Só concorre a vencedor o modelo que parte apenas da foto**, avaliado em P3 com máscara predita.
+8. **Decidido pelo autor durante a execução:** o treino das redes não roda no MacBook. O código é escrito e testado localmente e executado em Kaggle, Colab ou PC com GPU por `remote/executar.ipynb`. A restrição "Treino em PyTorch com aceleração MPS" acima deixa de valer.
 
 ## Deixado para quem implementar
 
